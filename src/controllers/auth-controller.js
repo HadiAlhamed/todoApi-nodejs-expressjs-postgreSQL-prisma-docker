@@ -1,31 +1,30 @@
-import db from '../db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
-
+import prisma from '../prisma-client.js';
 const register = async (req, res) => {
   const { username, password } = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   try {
-    const query = `
-        INSERT INTO users (username , password) VALUES (?, ?)
-      `;
-    const insertedUser = db.prepare(query);
-    const userResult = insertedUser.run(username, hashedPassword);
-
+    const user = await prisma.user.create({
+      data: {
+        username: username,
+        password: hashedPassword,
+      },
+    });
     //create a default todo for the new user
     const defaultTodo = `Hello, Add your first todo!`;
-    const todoQuery = `
-        INSERT INTO todos (user_id , task) VALUES (?, ?)
-        `;
-    const insertedTodo = db.prepare(todoQuery);
-    insertedTodo.run(userResult.lastInsertRowid, defaultTodo);
-
+    await prisma.todo.create({
+      data: {
+        task: defaultTodo,
+        userId: user.id,
+      },
+    });
     //generate JWT token
     const token = await jwt.sign(
       {
-        id: userResult.lastInsertRowid,
+        id: user.id,
         username: username,
       },
       process.env.JWT_SECRET,
@@ -43,13 +42,11 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { username, password } = req.body;
   try {
-    const getUserQuery = `
-      SELECT * FROM users 
-      WHERE username = ?
-    `;
-    const getUser = db.prepare(getUserQuery);
-    const user = getUser.get(username);
-
+    const user = await prisma.user.findUnique({
+      where: {
+        username: username,
+      },
+    });
     //check username
     if (!user) {
       return res
