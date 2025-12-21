@@ -1,0 +1,6 @@
+node_modules/
+.env
+.prettierignore
+.prettierrc
+eslint.config.mjs
+/src/generated/prisma

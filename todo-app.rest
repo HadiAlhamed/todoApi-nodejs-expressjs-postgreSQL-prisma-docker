@@ -1,0 +1,47 @@
+### GET /
+GET http://localhost:5000
+
+### POST /auth/register
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "testpassword"
+}
+
+### POST /auth/login
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "testpassword"
+}
+
+### Fetch all todos GET /TODOS(protected route)
+GET http://localhost:5000/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc2NjEwMDMxOCwiZXhwIjoxNzY2MTg2NzE4fQ._VuRNNwldBJ7hMTl83mQtdflsNOPhC0-lq-d5cZ8SbI
+
+### Create new todo POST /TODOS(protected route)
+POST http://localhost:5000/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc2NjEwMDMxOCwiZXhwIjoxNzY2MTg2NzE4fQ._VuRNNwldBJ7hMTl83mQtdflsNOPhC0-lq-d5cZ8SbI
+Content-Type: application/json
+
+{
+    "task": "Buy groceries"
+}
+
+### Update todo PUT /TODOS/:ID(protected route)
+PUT http://localhost:5000/todos/1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc2NjEwMDMxOCwiZXhwIjoxNzY2MTg2NzE4fQ._VuRNNwldBJ7hMTl83mQtdflsNOPhC0-lq-d5cZ8SbI
+Content-Type: application/json
+
+{
+    "task": "Buy groceries",
+    "completed": 1
+}
+
+### Delete todo DELETE /TODOS/:ID(protected route)
+DELETE http://localhost:5000/todos/1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc2NjEwMDMxOCwiZXhwIjoxNzY2MTg2NzE4fQ._VuRNNwldBJ7hMTl83mQtdflsNOPhC0-lq-d5cZ8SbI
