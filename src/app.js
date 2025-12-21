@@ -5,6 +5,10 @@ import authRoutes from './routes/auth-routes.js';
 import todoRoutes from './routes/todo-routes.js';
 import dotenv from 'dotenv';
 import authMiddleware from './middlewares/auth-middleware.js';
+import helmet from 'helmet';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import xss from 'xss-clean';
 
 dotenv.config();
 const app = express();
@@ -14,7 +18,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 //middlewares
-app.use(express.json());
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+
+app.use(helmet());
+app.use(express.json({ limit: '10kb' }));
+app.use(xss());
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    credentials: true,
+  })
+);
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/', (req, res) => {
@@ -22,7 +39,7 @@ app.get('/', (req, res) => {
 });
 
 //routes
-app.use('/auth', authRoutes);
+app.use('/auth', authLimiter, authRoutes);
 app.use('/todos', authMiddleware, todoRoutes);
 
 app.listen(PORT, () => {
