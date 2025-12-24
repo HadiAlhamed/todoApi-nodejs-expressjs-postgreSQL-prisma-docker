@@ -64,7 +64,7 @@ export const deleteTodo = async (req, res) => {
   const taskId = req.params.id;
 
   try {
-    await prisma.todo.deleteUnique({
+    await prisma.todo.delete({
       where: {
         id: parseInt(taskId),
         userId: req.userId,
