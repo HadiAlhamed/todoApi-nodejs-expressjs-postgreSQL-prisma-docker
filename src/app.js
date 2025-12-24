@@ -8,7 +8,6 @@ import authMiddleware from './middlewares/auth-middleware.js';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import xss from 'xss-clean';
 
 dotenv.config();
 const app = express();
@@ -23,9 +22,18 @@ const authLimiter = rateLimit({
   max: 100,
 });
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrcAttr: ["'unsafe-inline'"],
+      },
+    },
+  })
+);
 app.use(express.json({ limit: '10kb' }));
-app.use(xss());
 app.use(
   cors({
     origin: [
